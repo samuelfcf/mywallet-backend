@@ -5,7 +5,7 @@ const TransactionSchema = joi.object({
   description: joi.string().empty().required(),
   value: joi.number().integer().min(1).required(),
   inflow: joi.boolean().required(),
-  data: joi.date().iso().required(),
+  date: joi.date().iso().required(),
   id: joi.any().forbidden()
 });
 

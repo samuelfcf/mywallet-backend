@@ -5,6 +5,7 @@ import connection from "../database/database.js";
 async function ensureAuthenticated(req, res, next) {
   const authToken = req.headers.authorization;
   const [, token] = authToken?.split(' ');
+  const user_id = req?.params.id
 
   if (!token) {
     return res.sendStatus(401);
@@ -22,8 +23,8 @@ async function ensureAuthenticated(req, res, next) {
 
     const user = result.rows[0];
 
-    if (!user) {
-      res.sendStatus(401);
+    if (!user || (user_id && (parseInt(user.user_id) !== parseInt(user_id)))) {
+      return res.sendStatus(401);
     } else {
       next();
     }
