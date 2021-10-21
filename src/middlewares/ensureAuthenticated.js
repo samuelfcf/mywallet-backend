@@ -1,0 +1,36 @@
+import bcrypt from "bcrypt";
+import { v4 as uuid } from "uuid";
+import connection from "../database/database.js";
+
+async function ensureAuthenticated(req, res, next) {
+  const authToken = req.headers.authorization;
+  const [, token] = authToken?.split(' ');
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  try {
+    const result = await connection.query(`
+      SELECT
+        *
+      FROM users
+      JOIN sessions
+        ON sessions.user_id = users.id
+      WHERE sessions.token = $1
+    `, [token]);
+
+    const user = result.rows[0];
+
+    if (!user) {
+      res.sendStatus(401);
+    } else {
+      next();
+    }
+  } catch (err) {
+    console.log(err.message);
+    res.sendStatus(500);
+  }
+}
+
+export default ensureAuthenticated;
