@@ -6,8 +6,6 @@ import TransactionSchema from "../schemas/TransactionSchema.js";
 async function postTransacion(req, res) {
   const { value, description, inflow, date } = req.body;
   const user_id = req.params.id;
-  const authToken = req.headers.authorization;
-  const [, token] = authToken?.split(' ');
 
   try {
     const { error } = TransactionSchema.validate({ user_id, value, description, inflow, date });
@@ -38,6 +36,23 @@ async function postTransacion(req, res) {
   }
 }
 
+async function getTransactions(req, res) {
+  const user_id = req.params.id;
+  try {
+    const result = await connection.query(`SELECT * FROM transactions WHERE user_id = $1`, [user_id]);
+
+    if (result.rowCount === 0) {
+      res.sendStatus(404);
+    }
+
+    res.status(200).send(result.rows);
+  } catch (err) {
+    console.log(err.message);
+    res.sendStatus(500);
+  }
+}
+
 export {
-  postTransacion
+  postTransacion,
+  getTransactions
 }
