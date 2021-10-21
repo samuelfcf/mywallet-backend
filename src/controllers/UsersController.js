@@ -75,7 +75,23 @@ async function logIn(req, res) {
   }
 }
 
+async function logOut(req, res) {
+  const authToken = req.headers.authorization;
+  const [, token] = authToken?.split(' ');
+
+  try {
+    await connection.query(`DELETE FROM sessions WHERE token = $1`, [token]);
+    res.status(200).send({
+      message: "Logout realizado com sucesso!!"
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.sendStatus(500);
+  }
+}
+
 export {
   postUser,
-  logIn
+  logIn,
+  logOut,
 }
