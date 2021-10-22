@@ -11,13 +11,13 @@ async function postUser(req, res) {
     const { error } = UserSchema.validate({ name, email, password });
 
     if (error) {
-      res.sendStatus(400);
+      return res.sendStatus(400);
     }
 
     const result = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
 
     if (result.rowCount > 0) {
-      res.sendStatus(409);
+      return res.sendStatus(409);
     } else {
       const passwordHash = bcrypt.hashSync(password, 10);
 
@@ -41,14 +41,14 @@ async function logIn(req, res) {
     const { error } = UserLoginSchema.validate({ email, password });
 
     if (error) {
-      res.sendStatus(400);
+      return res.sendStatus(400);
     }
 
     const result = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
     const user = result.rows[0];
 
     if (!user) {
-      res.status(400).send({
+      return res.status(400).send({
         message: "Email/senha incorretos"
       });
     }
@@ -56,13 +56,13 @@ async function logIn(req, res) {
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
-      res.status(400).send({
+      return res.status(400).send({
         message: "Email/senha incorretos"
       });
     }
 
-
     const token = uuid();
+
     await connection.query(`INSERT INTO sessions (user_id, token) VALUES ($1, $2)`, [user.id, token]);
     res.status(200).send({
       token,

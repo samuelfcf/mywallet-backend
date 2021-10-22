@@ -9,7 +9,7 @@ async function postTransacion(req, res) {
     const { error } = TransactionSchema.validate({ user_id, value, description, inflow, date });
 
     if (error) {
-      res.sendStatus(400);
+      return res.sendStatus(400);
     }
 
     const result = await connection.query(`
@@ -22,7 +22,7 @@ async function postTransacion(req, res) {
     `, [user_id]);
 
     if (result.rowCount === 0) {
-      res.sendStatus(404);
+      return res.sendStatus(404);
     }
 
     await connection.query(`INSERT INTO transactions (user_id, value, description, inflow, date) VALUES ($1, $2, $3, $4, $5)`, [user_id, value, description, inflow, date]);
@@ -40,7 +40,7 @@ async function getTransactions(req, res) {
     const result = await connection.query(`SELECT * FROM transactions WHERE user_id = $1`, [user_id]);
 
     if (result.rowCount === 0) {
-      res.sendStatus(404);
+      return res.sendStatus(404);
     }
 
     res.status(200).send(result.rows);
