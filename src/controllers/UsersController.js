@@ -69,6 +69,7 @@ async function logIn(req, res) {
     res.status(200).send({
       id,
       name,
+      token,
       message: "Usuário logado com sucesso!!"
     });
 
