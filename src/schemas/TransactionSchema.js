@@ -3,7 +3,7 @@ import joi from "joi";
 const TransactionSchema = joi.object({
   user_id: joi.number().integer().min(1).required(),
   description: joi.string().empty().required(),
-  value: joi.number().integer().min(1).required(),
+  value: joi.number().strinct().required(),
   inflow: joi.boolean().required(),
   date: joi.date().iso().required(),
   id: joi.any().forbidden()
