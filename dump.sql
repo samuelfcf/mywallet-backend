@@ -184,8 +184,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.sessions (id, user_id, token) FROM stdin;
-88	7	d36d7870-9239-4a6a-b230-f9a0c2a58577
-90	7	5e0b98ba-ae8e-4652-85b9-cee194cfeb9f
+173	7	a67e7fc9-c11c-47cd-adad-2a7ed1644235
 \.
 
 
@@ -213,6 +212,13 @@ COPY public.transactions (id, user_id, description, value, inflow, date) FROM st
 30	7	jogo do tricolor	100.0000	t	2021-10-24
 31	7	menos 20	20.0000	f	2021-10-24
 32	7	tome meu fi	2300.0000	t	2021-10-24
+33	7	ratinho me deu	500.0000	t	2021-10-25
+34	7	ratinho tomou	2000.0000	f	2021-10-25
+37	7	balinha de menta	0.1400	f	2021-10-25
+44	77	entrada teste	10.0000	t	2021-10-25
+45	77	saida teste	10.0000	f	2021-10-25
+46	77	teste saldo negativo	120.0000	f	2021-10-25
+47	77	teste saldo positivo	230.0000	t	2021-10-25
 \.
 
 
@@ -223,6 +229,7 @@ COPY public.transactions (id, user_id, description, value, inflow, date) FROM st
 COPY public.users (id, name, email, password) FROM stdin;
 7	Xaropinho	xarope@email.com	$2b$10$kUaVGV6SNZcfOTnSk1NbquOiBVyZSW5BvSGzF2jdZLvUT7yW.y8IS
 10	zeca	zeca@email.com	$2b$10$TGKfJtE7V5h920J2d89eau6psPdOTBPvmb4Kpdd/y3TjaMqHk0pVW
+97	Teste	teste@email.com	$2b$10$hxBdUREDzynIf05h2uWcRO2i37Jwrmc6rEHf1q.HB25Ib.KGdC0J6
 \.
 
 
@@ -230,14 +237,14 @@ COPY public.users (id, name, email, password) FROM stdin;
 -- Name: sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sessions_id_seq', 90, true);
+SELECT pg_catalog.setval('public.sessions_id_seq', 232, true);
 
 
 --
 -- Name: transactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.transactions_id_seq', 32, true);
+SELECT pg_catalog.setval('public.transactions_id_seq', 47, true);
 
 
 --
@@ -251,7 +258,7 @@ SELECT pg_catalog.setval('public.transactions_user_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 10, true);
+SELECT pg_catalog.setval('public.users_id_seq', 97, true);
 
 
 --
