@@ -4,9 +4,10 @@ import connection from "../database/database.js";
 
 describe("POST /sign-up", () => {
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await connection.query("DELETE FROM users WHERE name='Teste';");
   })
+
 
   test("returns 400 for invalid body", async () => {
     const result = await supertest(app)
