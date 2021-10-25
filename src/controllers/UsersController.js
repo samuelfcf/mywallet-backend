@@ -48,7 +48,7 @@ async function logIn(req, res) {
     const user = result.rows[0];
 
     if (!user) {
-      return res.status(400).send({
+      return res.status(401).send({
         message: "Email/senha incorretos"
       });
     }
@@ -56,7 +56,7 @@ async function logIn(req, res) {
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(400).send({
+      return res.status(401).send({
         message: "Email/senha incorretos"
       });
     }

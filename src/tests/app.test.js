@@ -71,7 +71,7 @@ describe("POST /log-in", () => {
       .post("/log-in")
       .send(body);
 
-    expect(result.status).toEqual(400);
+    expect(result.status).toEqual(401);
     expect(result.body).toHaveProperty('message');
   });
 
