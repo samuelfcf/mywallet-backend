@@ -46,7 +46,11 @@ describe("POST /sign-up", () => {
   });
 });
 
-describe('POST /log-in', () => {
+describe("POST /log-in", () => {
+
+  afterAll(async () => {
+    await connection.query("DELETE FROM sessions WHERE user_id <> 7;")
+  })
 
   test("returns 400 for invalid body", async () => {
     const result = await supertest(app)
@@ -83,4 +87,43 @@ describe('POST /log-in', () => {
     expect(result.status).toEqual(200);
     expect(result.body).toHaveProperty('name');
   })
+});
+
+describe("GET /log-out", () => {
+
+  beforeAll(async () => {
+    await connection.query("INSERT INTO sessions (user_id, token) VALUES (7, 'd6a21e3d-7933-4fba-b3ff-109d4fdcb035');");
+  })
+
+  afterAll(async () => {
+    await connection.query("DELETE FROM sessions WHERE token='d6a21e3d-7933-4fba-b3ff-109d4fdcb035';");
+  })
+
+  test("returns 401 for not auth user", async () => {
+    const result = await supertest(app)
+      .get("/log-out")
+      .set('Authorization', ' ')
+      .send({})
+
+    expect(result.status).toEqual(401);
+  });
+
+  test("returns 401 for invalid token", async () => {
+    const result = await supertest(app)
+      .get("/log-out")
+      .set('Authorization', 'Bearer este_é_um_token_inválido')
+      .send({})
+
+    expect(result.status).toEqual(401);
+  });
+
+  test("returns 200 for successful logout", async () => {
+    const result = await supertest(app)
+      .get("/log-out")
+      .set('Authorization', 'Bearer d6a21e3d-7933-4fba-b3ff-109d4fdcb035')
+      .send({})
+
+    expect(result.status).toEqual(200);
+    expect(result.body).toHaveProperty('message');
+  });
 });
