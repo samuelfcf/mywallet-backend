@@ -45,3 +45,42 @@ describe("POST /sign-up", () => {
     expect(result.body).toHaveProperty('name');
   });
 });
+
+describe('POST /log-in', () => {
+
+  test("returns 400 for invalid body", async () => {
+    const result = await supertest(app)
+      .post("/log-in")
+      .send({})
+
+    expect(result.status).toEqual(400);
+  });
+
+  test("returns 400 for incorrect email or password", async () => {
+    const body = {
+      email: "teste@email.com",
+      password: "puts errei a senha"
+    }
+
+    const result = await supertest(app)
+      .post("/log-in")
+      .send(body);
+
+    expect(result.status).toEqual(400);
+    expect(result.body).toHaveProperty('message');
+  });
+
+  test("returns 200 for login user successfully", async () => {
+    const body = {
+      email: "teste@email.com",
+      password: "123456"
+    }
+
+    const result = await supertest(app)
+      .post("/log-in")
+      .send(body);
+
+    expect(result.status).toEqual(200);
+    expect(result.body).toHaveProperty('name');
+  })
+});
