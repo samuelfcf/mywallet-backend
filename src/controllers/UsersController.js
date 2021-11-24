@@ -5,7 +5,7 @@ import UserLoginSchema from '../schemas/UserLoginSchema.js';
 import UserService from '../services/UserService.js';
 import AuthService from '../services/AuthService.js';
 
-class UserController {
+class UsersController {
   async create(req, res) {
     const { name, email, password } = req.body;
 
@@ -74,4 +74,4 @@ class UserController {
   }
 }
 
-export default new UserController();
+export default new UsersController();

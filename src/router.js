@@ -3,8 +3,8 @@ import {
   getTransactions,
   postTransacion
 } from './controllers/TransactionsController.js';
-import UsersController from './controllers/UsersController.js';
-import ensureAuth from './middlewares/ensureAuth.js';
+import userRouter from './routes/user.routes.js';
+import authRouter from './routes/auth.routes.js';
 
 const router = Router();
 
@@ -15,8 +15,8 @@ router.get('/status', (_, res) => {
 });
 
 // Public Routes
-router.post('/sign-up', UsersController.create);
-router.post('/log-in', UsersController.authenticate);
+router.use('/', userRouter);
+router.use('/', authRouter);
 
 /* 
 // Privated Routes
