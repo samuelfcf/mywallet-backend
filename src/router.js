@@ -20,7 +20,6 @@ router.post('/log-in', UsersController.authenticate);
 
 /* 
 // Privated Routes
-router.get('/log-out', ensureAuthenticated, logOut);
 router.post('/user/:id/transactions', ensureAuthenticated, postTransacion);
 router.get('/user/:id/transactions', ensureAuthenticated, getTransactions); */
 
