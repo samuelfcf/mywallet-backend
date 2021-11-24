@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 const setup = dotenv.config({
-  path: envFile,
+  path: envFile
 });
 
-export default setup
+export default setup;

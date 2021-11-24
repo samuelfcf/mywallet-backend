@@ -1,4 +1,4 @@
-import joi from "joi";
+import joi from 'joi';
 
 const TransactionSchema = joi.object({
   user_id: joi.number().integer().min(1).required(),

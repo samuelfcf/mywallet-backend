@@ -1,31 +1,43 @@
-import connection from "../database/connection.js";
-import TransactionSchema from "../schemas/TransactionSchema.js";
+import connection from '../database/connection.js';
+import TransactionSchema from '../schemas/TransactionSchema.js';
 
 async function postTransacion(req, res) {
   const { value, description, inflow, date } = req.body;
   const user_id = req.params.id;
 
   try {
-    const { error } = TransactionSchema.validate({ user_id, value, description, inflow, date });
+    const { error } = TransactionSchema.validate({
+      user_id,
+      value,
+      description,
+      inflow,
+      date
+    });
 
     if (error) {
       return res.sendStatus(400);
     }
 
-    const result = await connection.query(`
+    const result = await connection.query(
+      `
       SELECT
        *
       FROM users
         JOIN sessions
           ON users.id = sessions.user_id
       WHERE users.id = $1
-    `, [user_id]);
+    `,
+      [user_id]
+    );
 
     if (result.rowCount === 0) {
       return res.sendStatus(404);
     }
 
-    await connection.query(`INSERT INTO transactions (user_id, value, description, inflow, date) VALUES ($1, $2, $3, $4, $5)`, [user_id, value, description, inflow, date]);
+    await connection.query(
+      `INSERT INTO transactions (user_id, value, description, inflow, date) VALUES ($1, $2, $3, $4, $5)`,
+      [user_id, value, description, inflow, date]
+    );
 
     res.sendStatus(201);
   } catch (err) {
@@ -37,7 +49,10 @@ async function postTransacion(req, res) {
 async function getTransactions(req, res) {
   const user_id = req.params.id;
   try {
-    const result = await connection.query(`SELECT * FROM transactions WHERE user_id = $1`, [user_id]);
+    const result = await connection.query(
+      `SELECT * FROM transactions WHERE user_id = $1`,
+      [user_id]
+    );
 
     if (result.rowCount === 0) {
       return res.sendStatus(404);
@@ -50,7 +65,4 @@ async function getTransactions(req, res) {
   }
 }
 
-export {
-  postTransacion,
-  getTransactions
-}
+export { postTransacion, getTransactions };

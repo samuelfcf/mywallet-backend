@@ -1,9 +1,9 @@
-import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid";
-import connection from "../database/connection.js";
-import UserSchema from "../schemas/UserSchema.js";
-import UserLoginSchema from "../schemas/UserLoginSchema.js";
-import UserRepository from "../repositories/UserRepository.js";
+import bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
+import connection from '../database/connection.js';
+import UserSchema from '../schemas/UserSchema.js';
+import UserLoginSchema from '../schemas/UserLoginSchema.js';
+import UserRepository from '../repositories/UserRepository.js';
 
 async function postUser(req, res) {
   const { name, email, password } = req.body;
@@ -17,7 +17,10 @@ async function postUser(req, res) {
       return res.sendStatus(400);
     }
 
-    const result = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
+    const result = await connection.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email]
+    );
 
     if (result.rowCount > 0) {
       return res.sendStatus(409);
@@ -27,13 +30,13 @@ async function postUser(req, res) {
       await userRepository.create({
         name,
         email,
-        password: passwordHash,
+        password: passwordHash
       });
 
       res.status(201).send({
         name,
         email,
-        message: "Usuário cadastrado com sucesso!!"
+        message: 'Usuário cadastrado com sucesso!!'
       });
     }
   } catch (err) {
@@ -52,12 +55,15 @@ async function logIn(req, res) {
       return res.sendStatus(400);
     }
 
-    const result = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
+    const result = await connection.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email]
+    );
     const user = result.rows[0];
 
     if (!user) {
       return res.status(401).send({
-        message: "Email/senha incorretos"
+        message: 'Email/senha incorretos'
       });
     }
 
@@ -65,7 +71,7 @@ async function logIn(req, res) {
 
     if (!passwordMatch) {
       return res.status(401).send({
-        message: "Email/senha incorretos"
+        message: 'Email/senha incorretos'
       });
     }
 
@@ -73,14 +79,16 @@ async function logIn(req, res) {
     const name = user.name;
     const id = user.id;
 
-    await connection.query(`INSERT INTO sessions (user_id, token) VALUES ($1, $2)`, [user.id, token]);
+    await connection.query(
+      `INSERT INTO sessions (user_id, token) VALUES ($1, $2)`,
+      [user.id, token]
+    );
     res.status(200).send({
       id,
       name,
       token,
-      message: "Usuário logado com sucesso!!"
+      message: 'Usuário logado com sucesso!!'
     });
-
   } catch (err) {
     console.log(err.message);
     res.sendStatus(500);
@@ -94,7 +102,7 @@ async function logOut(req, res) {
   try {
     await connection.query(`DELETE FROM sessions WHERE token = $1`, [token]);
     res.status(200).send({
-      message: "Logout realizado com sucesso!!"
+      message: 'Logout realizado com sucesso!!'
     });
   } catch (err) {
     console.log(err.message);
@@ -102,8 +110,4 @@ async function logOut(req, res) {
   }
 }
 
-export {
-  postUser,
-  logIn,
-  logOut,
-}
+export { postUser, logIn, logOut };
