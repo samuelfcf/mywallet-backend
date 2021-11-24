@@ -7,6 +7,15 @@ class UserRepository {
       [name, email, password]
     );
   }
+
+  async find({ email }) {
+    const result = await connection.query(
+      `SELECT * FROM users WHERE email=$1;`,
+      [email]
+    );
+    const userExists = result.rows[0];
+    return userExists;
+  }
 }
 
 export default UserRepository;

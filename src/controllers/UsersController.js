@@ -1,51 +1,44 @@
-import bcrypt from 'bcrypt';
-import { v4 as uuid } from 'uuid';
 import connection from '../database/connection.js';
+import { v4 as uuid } from 'uuid';
 import UserSchema from '../schemas/UserSchema.js';
 import UserLoginSchema from '../schemas/UserLoginSchema.js';
-import UserRepository from '../repositories/UserRepository.js';
+import UserService from '../services/UserService.js';
 
-async function postUser(req, res) {
-  const { name, email, password } = req.body;
+class UserController {
+  async create(req, res) {
+    const { name, email, password } = req.body;
 
-  try {
-    const userRepository = new UserRepository();
+    try {
+      const { error } = UserSchema.validate({ name, email, password });
+      if (error) {
+        return res.sendStatus(400);
+      }
 
-    const { error } = UserSchema.validate({ name, email, password });
-
-    if (error) {
-      return res.sendStatus(400);
-    }
-
-    const result = await connection.query(
-      `SELECT * FROM users WHERE email = $1`,
-      [email]
-    );
-
-    if (result.rowCount > 0) {
-      return res.sendStatus(409);
-    } else {
-      const passwordHash = bcrypt.hashSync(password, 10);
-
-      await userRepository.create({
+      const userService = new UserService();
+      await userService.create({
         name,
         email,
-        password: passwordHash
+        password
       });
 
-      res.status(201).send({
-        name,
-        email,
-        message: 'Usuário cadastrado com sucesso!!'
+      return res.sendStatus(201);
+    } catch (err) {
+      if (err.message.includes('already')) {
+        return res.status(409).send({
+          message: err.message
+        });
+      }
+
+      return res.status(500).send({
+        message: `Cannot create user. Error: ${err.message}`
       });
     }
-  } catch (err) {
-    console.log(err.message);
-    res.sendStatus(500);
   }
 }
 
-async function logIn(req, res) {
+export default new UserController();
+
+/* async function logIn(req, res) {
   const { email, password } = req.body;
 
   try {
@@ -108,6 +101,4 @@ async function logOut(req, res) {
     console.log(err.message);
     res.sendStatus(500);
   }
-}
-
-export { postUser, logIn, logOut };
+} */
