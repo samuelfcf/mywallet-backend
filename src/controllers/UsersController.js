@@ -1,13 +1,16 @@
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
-import connection from "../database/database.js";
+import connection from "../database/connection.js";
 import UserSchema from "../schemas/UserSchema.js";
 import UserLoginSchema from "../schemas/UserLoginSchema.js";
+import UserRepository from "../repositories/UserRepository.js";
 
 async function postUser(req, res) {
   const { name, email, password } = req.body;
 
   try {
+    const userRepository = new UserRepository();
+
     const { error } = UserSchema.validate({ name, email, password });
 
     if (error) {
@@ -21,7 +24,12 @@ async function postUser(req, res) {
     } else {
       const passwordHash = bcrypt.hashSync(password, 10);
 
-      await connection.query(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`, [name, email, passwordHash]);
+      await userRepository.create({
+        name,
+        email,
+        password: passwordHash,
+      });
+
       res.status(201).send({
         name,
         email,

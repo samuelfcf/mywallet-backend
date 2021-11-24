@@ -5,6 +5,12 @@ import ensureAuthenticated from "./middlewares/ensureAuthenticated.js";
 
 const router = Router();
 
+router.get('/status', (req, res) => {
+  res.send({
+    message: 'Server ok!',
+  });
+});
+
 // Public Routes
 router.post("/sign-up", postUser);
 router.post("/log-in", logIn);

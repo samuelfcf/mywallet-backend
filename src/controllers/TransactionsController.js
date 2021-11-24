@@ -1,4 +1,4 @@
-import connection from "../database/database.js";
+import connection from "../database/connection.js";
 import TransactionSchema from "../schemas/TransactionSchema.js";
 
 async function postTransacion(req, res) {
