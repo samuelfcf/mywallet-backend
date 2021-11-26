@@ -1,56 +1,59 @@
-import connection from "../database/database.js";
-import TransactionSchema from "../schemas/TransactionSchema.js";
+import connection from '../database/connection.js';
+import TransactionSchema from '../schemas/TransactionSchema.js';
+import TransactionsService from '../services/TransactionsService.js';
 
-async function postTransacion(req, res) {
-  const { value, description, inflow, date } = req.body;
-  const user_id = req.params.id;
+class TransactionsController {
+  async create(req, res) {
+    const { value, description, inflow, date } = req.body;
+    const { userId } = req.params;
 
-  try {
-    const { error } = TransactionSchema.validate({ user_id, value, description, inflow, date });
+    try {
+      const { error } = TransactionSchema.validate({
+        userId,
+        value,
+        description,
+        inflow,
+        date
+      });
+      if (error) return res.sendStatus(400);
 
-    if (error) {
-      return res.sendStatus(400);
+      const transactionsService = new TransactionsService();
+      await transactionsService.create({
+        userId,
+        value,
+        description,
+        inflow,
+        date
+      });
+
+      return res.status(200).send({
+        message: 'Created!'
+      });
+    } catch (err) {
+      return res.send(500).send({
+        message: `Cannot create transaction. Error: ${err.message}`
+      });
     }
+  }
 
-    const result = await connection.query(`
-      SELECT
-       *
-      FROM users
-        JOIN sessions
-          ON users.id = sessions.user_id
-      WHERE users.id = $1
-    `, [user_id]);
+  async getTransactions(req, res) {
+    const { userId } = req.params;
 
-    if (result.rowCount === 0) {
-      return res.sendStatus(404);
+    try {
+      const transactionsService = new TransactionsService();
+      const transactions = await transactionsService.findTransactions({
+        userId
+      });
+
+      if (!transactions) return res.sendStatus(404);
+
+      return res.status(200).send(transactions);
+    } catch (err) {
+      return res.status(500).send({
+        message: `Cannot find transactions, Error: ${err.message}`
+      });
     }
-
-    await connection.query(`INSERT INTO transactions (user_id, value, description, inflow, date) VALUES ($1, $2, $3, $4, $5)`, [user_id, value, description, inflow, date]);
-
-    res.sendStatus(201);
-  } catch (err) {
-    console.log(err.message);
-    res.sendStatus(500);
   }
 }
 
-async function getTransactions(req, res) {
-  const user_id = req.params.id;
-  try {
-    const result = await connection.query(`SELECT * FROM transactions WHERE user_id = $1`, [user_id]);
-
-    if (result.rowCount === 0) {
-      return res.sendStatus(404);
-    }
-
-    res.status(200).send(result.rows);
-  } catch (err) {
-    console.log(err.message);
-    res.sendStatus(500);
-  }
-}
-
-export {
-  postTransacion,
-  getTransactions
-}
+export default new TransactionsController();
