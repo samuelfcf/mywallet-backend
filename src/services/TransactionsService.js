@@ -1,7 +1,7 @@
-import TransactionsRepository from '../repositories/TransactionsRopository.js';
+import TransactionsRepository from '../repositories/TransactionsRepository.js';
 
 class TransactionsService {
-  async postTransactions({ userId, value, description, inflow, date }) {
+  async create({ userId, value, description, inflow, date }) {
     const transactionsRepository = new TransactionsRepository();
     const transaction = await transactionsRepository.createNewTransaction({
       userId,
@@ -14,7 +14,7 @@ class TransactionsService {
     return transaction;
   }
 
-  async getTransactions({ userId }) {
+  async findTransactions({ userId }) {
     const transactionsRepository = new TransactionsRepository();
     const transactions = await transactionsRepository.getUserTransactions({
       userId

@@ -12,13 +12,21 @@ class UsersController {
       }
 
       const userService = new UserService();
-      await userService.create({
+      const user = await userService.create({
         name,
         email,
         password
       });
 
-      return res.sendStatus(201);
+      return res.status(201).send({
+        code: 201,
+        data: {
+          user: {
+            name: user.name,
+            email: user.email
+          }
+        }
+      });
     } catch (err) {
       if (err.message.includes('already')) {
         return res.status(409).send({

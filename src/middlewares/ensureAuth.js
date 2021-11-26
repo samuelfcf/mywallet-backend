@@ -1,5 +1,5 @@
 import { JWT_CONFIG } from '../utils/constants.js';
-import verify from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const ensureAuth = async (req, res, next) => {
   const authToken = req.headers.authorization;
@@ -10,7 +10,7 @@ const ensureAuth = async (req, res, next) => {
 
   try {
     const [, token] = authToken?.split(' ');
-    const { sub } = verify(token, JWT_CONFIG.secret);
+    const { sub } = jwt.verify(token, JWT_CONFIG.secret);
 
     req.user = {
       id: sub
@@ -19,7 +19,7 @@ const ensureAuth = async (req, res, next) => {
     return next();
   } catch (err) {
     console.log(err.message);
-    return res.senStatus(401);
+    return res.sendStatus(401);
   }
 };
 

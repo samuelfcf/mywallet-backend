@@ -1,4 +1,4 @@
-import { compare } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import UserRepository from '../repositories/UserRepository.js';
 import { JWT_CONFIG } from '../utils/constants.js';
@@ -12,7 +12,7 @@ class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    const passMatch = compare(password, userExists.password);
+    const passMatch = bcrypt.compareSync(password, userExists.password);
     if (!passMatch) {
       throw new Error('Invalid credentials');
     }
