@@ -1,7 +1,7 @@
 import connection from '../database/connection.js';
 import TransactionSchema from '../schemas/TransactionSchema.js';
 
-async function postTransacion(req, res) {
+/* async function postTransacion(req, res) {
   const { value, description, inflow, date } = req.body;
   const user_id = req.params.id;
 
@@ -63,6 +63,6 @@ async function getTransactions(req, res) {
     console.log(err.message);
     res.sendStatus(500);
   }
-}
+} */
 
 export { postTransacion, getTransactions };

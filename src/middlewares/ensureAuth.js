@@ -1,6 +1,5 @@
 import { JWT_CONFIG } from '../utils/constants.js';
 import verify from 'jsonwebtoken';
-import connection from '../database/connection.js';
 
 const ensureAuth = async (req, res, next) => {
   const authToken = req.headers.authorization;
