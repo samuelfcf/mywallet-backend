@@ -1,11 +1,16 @@
 import app from '../src/app.js';
 import supertest from 'supertest';
 import connection from '../src/database/connection.js';
-import { fakeUserSignUp, createToken } from '../src/factories/user.factory.js';
+import {
+  fakeUserSignUp,
+  createToken,
+  deleteUser
+} from '../src/factories/user.factory.js';
 import * as F from '../src/factories/transactions.factory.js';
 
 afterAll(async () => {
   await F.deleteTransaction();
+  await deleteUser();
   connection.end();
 });
 

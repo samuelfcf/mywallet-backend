@@ -30,7 +30,8 @@ class TransactionsController {
         message: 'Created!'
       });
     } catch (err) {
-      return res.send(500).send({
+      console.log(err.message);
+      return res.status(500).send({
         message: `Cannot create transaction. Error: ${err.message}`
       });
     }
